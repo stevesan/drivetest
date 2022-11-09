@@ -1,8 +1,5 @@
 
-from __future__ import print_function
-
-import os.path
-
+import os
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -45,7 +42,7 @@ def get_gapi_creds():
   return creds
 
 def main():
-  # Can last part of the url
+  # Last part of the url
   folder_id = '1dwbYWBibR3VRiTr_V6Ed4dmr4fcg6krv'
 
   creds = get_gapi_creds()
@@ -53,15 +50,12 @@ def main():
   results = service.files().list(
       q=f'"{folder_id}" in parents',
       fields="files(id, name)").execute()
-  items = results.get('files', [])
+  files = results.get('files', [])
 
-  if not items:
-      print('No files found.')
-      return
-  print('Files:')
-  for item in items:
-      print(f'{item["name"]} id={item["id"]}')
-      download_to(service, item['id'], item['name'])
+  print(f'{len(files)} files:')
+  for file in files:
+      print(f'{file["name"]} id={file["id"]}')
+      download_to(service, file['id'], file['name'])
 
 if __name__ == '__main__':
     main()
